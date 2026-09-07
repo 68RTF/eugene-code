@@ -1,0 +1,6 @@
+[build]
+  command = "npm run build"
+
+[[edge_functions]]
+  function = "order-rate-limit"
+  path = "/api/order"
