@@ -127,7 +127,11 @@ export async function POST(request) {
     return jsonError("Некорректные данные.", 400);
   }
 
-  if (typeof body.website === "string" && body.website.trim()) {
+  if (body.website !== undefined && typeof body.website !== "string") {
+    return jsonError("Некорректные данные формы.", 400);
+  }
+
+  if (body.website?.trim()) {
     return Response.json({ ok: true });
   }
 
@@ -166,7 +170,11 @@ export async function POST(request) {
 
   const idempotencyKey = request.headers.get("idempotency-key")?.trim();
 
-  if (idempotencyKey && idempotencyKey.length <= 128) {
+  if (idempotencyKey && idempotencyKey.length > 128) {
+    return jsonError("Некорректный ключ запроса.", 400);
+  }
+
+  if (idempotencyKey) {
     const idempotencyId = `${clientKey}:${idempotencyKey}`;
 
     if (idempotencyStore.has(idempotencyId)) {

@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function OrderForm() {
   const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(false);
+  const submittingRef = useRef(false);
 
   async function submitOrder(event) {
     event.preventDefault();
 
-    if (loading) return;
+    if (submittingRef.current) return;
+
+    submittingRef.current = true;
 
     const formElement = event.currentTarget;
     const data = Object.fromEntries(new FormData(formElement).entries());
@@ -47,6 +50,7 @@ export default function OrderForm() {
         message: "Не удалось отправить заявку. Попробуй ещё раз."
       });
     } finally {
+      submittingRef.current = false;
       setLoading(false);
     }
   }
